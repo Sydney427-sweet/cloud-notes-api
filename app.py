@@ -2,13 +2,18 @@ from flask import Flask, request, jsonify
 import uuid
 import boto3
 from botocore.exceptions import ClientError
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 
-# --- DynamoDB Configuration ---
-REGION = "us-east-1"           # replace with your table's region
-TABLE_NAME = "Notes"           # exact table name
+# --- Load environment variables ---
+load_dotenv()  # Loads .env file if present
 
+REGION = os.getenv("AWS_REGION", "us-east-1")       # fallback if .env missing
+TABLE_NAME = os.getenv("DYNAMODB_TABLE", "Notes")   # fallback if .env missing
+
+# --- DynamoDB Configuration ---
 dynamodb = boto3.resource("dynamodb", region_name=REGION)
 table = dynamodb.Table(TABLE_NAME)
 
